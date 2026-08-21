@@ -1,0 +1,477 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.15"
+  }
+  public: {
+    Tables: {
+      account_settings: {
+        Row: {
+          created_at: string
+          credits_total_month: number
+          credits_used_month: number
+          firm_name: string
+          id: string
+          oab: string
+          plan: string
+          renewal_day: number
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits_total_month?: number
+          credits_used_month?: number
+          firm_name?: string
+          id?: string
+          oab?: string
+          plan?: string
+          renewal_day?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits_total_month?: number
+          credits_used_month?: number
+          firm_name?: string
+          id?: string
+          oab?: string
+          plan?: string
+          renewal_day?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      authorization_log: {
+        Row: {
+          authorized: boolean
+          case_id: string | null
+          created_at: string
+          id: string
+          judge_name: string | null
+          opposing_lawyer_name: string | null
+        }
+        Insert: {
+          authorized?: boolean
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          judge_name?: string | null
+          opposing_lawyer_name?: string | null
+        }
+        Update: {
+          authorized?: boolean
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          judge_name?: string | null
+          opposing_lawyer_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authorization_log_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_activity: {
+        Row: {
+          case_id: string
+          created_at: string
+          description: string
+          event_date: string
+          event_type: string
+          id: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_activity_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_files: {
+        Row: {
+          case_id: string
+          created_at: string
+          file_kind: string
+          file_name: string
+          file_url: string | null
+          id: string
+          uploaded_at: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          file_kind?: string
+          file_name: string
+          file_url?: string | null
+          id?: string
+          uploaded_at?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          file_kind?: string
+          file_name?: string
+          file_url?: string | null
+          id?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_files_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          case_number: string
+          case_type: string | null
+          client_email: string | null
+          client_name: string
+          client_phone: string | null
+          court: string | null
+          created_at: string
+          id: string
+          opposing_party: string | null
+          status: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          case_number: string
+          case_type?: string | null
+          client_email?: string | null
+          client_name: string
+          client_phone?: string | null
+          court?: string | null
+          created_at?: string
+          id?: string
+          opposing_party?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+        }
+        Update: {
+          case_number?: string
+          case_type?: string | null
+          client_email?: string | null
+          client_name?: string
+          client_phone?: string | null
+          court?: string | null
+          created_at?: string
+          id?: string
+          opposing_party?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deadlines: {
+        Row: {
+          case_id: string | null
+          created_at: string
+          due_date: string
+          id: string
+          kind: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          case_id?: string | null
+          created_at?: string
+          due_date: string
+          id?: string
+          kind?: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          case_id?: string | null
+          created_at?: string
+          due_date?: string
+          id?: string
+          kind?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deadlines_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_profiles: {
+        Row: {
+          avg_decision_days: number | null
+          behavior_summary: string
+          court: string | null
+          created_at: string
+          decisions_analyzed: number
+          grant_rate: number | null
+          id: string
+          last_updated_at: string
+          name: string
+          profile_type: string
+        }
+        Insert: {
+          avg_decision_days?: number | null
+          behavior_summary?: string
+          court?: string | null
+          created_at?: string
+          decisions_analyzed?: number
+          grant_rate?: number | null
+          id?: string
+          last_updated_at?: string
+          name: string
+          profile_type: string
+        }
+        Update: {
+          avg_decision_days?: number | null
+          behavior_summary?: string
+          court?: string | null
+          created_at?: string
+          decisions_analyzed?: number
+          grant_rate?: number | null
+          id?: string
+          last_updated_at?: string
+          name?: string
+          profile_type?: string
+        }
+        Relationships: []
+      }
+      piece_analysis: {
+        Row: {
+          analysis_result: string
+          case_id: string | null
+          created_at: string
+          id: string
+          input_file_url: string | null
+          input_text: string | null
+          mode: string
+          suggestions: string
+        }
+        Insert: {
+          analysis_result?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          input_file_url?: string | null
+          input_text?: string | null
+          mode?: string
+          suggestions?: string
+        }
+        Update: {
+          analysis_result?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          input_file_url?: string | null
+          input_text?: string | null
+          mode?: string
+          suggestions?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "piece_analysis_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      consume_credit: {
+        Args: never
+        Returns: {
+          credits_total_month: number
+          credits_used_month: number
+          ok: boolean
+        }[]
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
