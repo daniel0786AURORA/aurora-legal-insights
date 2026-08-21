@@ -34,7 +34,7 @@ export function DeadlineDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultDate?: string;
+  defaultDate?: string | undefined;
   deadline?: DeadlineFull | null;
 }) {
   const queryClient = useQueryClient();
