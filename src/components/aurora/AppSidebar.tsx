@@ -1,6 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Briefcase, Radar, FileSearch, Settings } from "lucide-react";
 
+import { useAccountSettings } from "@/hooks/use-account-settings";
+
 import {
   Sidebar,
   SidebarContent,
