@@ -14,13 +14,335 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      account_settings: {
+        Row: {
+          created_at: string
+          credits_total_month: number
+          credits_used_month: number
+          firm_name: string
+          id: string
+          oab: string
+          plan: string
+          renewal_day: number
+          singleton: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits_total_month?: number
+          credits_used_month?: number
+          firm_name?: string
+          id?: string
+          oab?: string
+          plan?: string
+          renewal_day?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits_total_month?: number
+          credits_used_month?: number
+          firm_name?: string
+          id?: string
+          oab?: string
+          plan?: string
+          renewal_day?: number
+          singleton?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      authorization_log: {
+        Row: {
+          authorized: boolean
+          case_id: string | null
+          created_at: string
+          id: string
+          judge_name: string | null
+          opposing_lawyer_name: string | null
+        }
+        Insert: {
+          authorized?: boolean
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          judge_name?: string | null
+          opposing_lawyer_name?: string | null
+        }
+        Update: {
+          authorized?: boolean
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          judge_name?: string | null
+          opposing_lawyer_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authorization_log_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_activity: {
+        Row: {
+          case_id: string
+          created_at: string
+          description: string
+          event_date: string
+          event_type: string
+          id: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_activity_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_files: {
+        Row: {
+          case_id: string
+          created_at: string
+          file_kind: string
+          file_name: string
+          file_url: string | null
+          id: string
+          uploaded_at: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          file_kind?: string
+          file_name: string
+          file_url?: string | null
+          id?: string
+          uploaded_at?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          file_kind?: string
+          file_name?: string
+          file_url?: string | null
+          id?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_files_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          case_number: string
+          case_type: string | null
+          client_email: string | null
+          client_name: string
+          client_phone: string | null
+          court: string | null
+          created_at: string
+          id: string
+          opposing_party: string | null
+          status: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          case_number: string
+          case_type?: string | null
+          client_email?: string | null
+          client_name: string
+          client_phone?: string | null
+          court?: string | null
+          created_at?: string
+          id?: string
+          opposing_party?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+        }
+        Update: {
+          case_number?: string
+          case_type?: string | null
+          client_email?: string | null
+          client_name?: string
+          client_phone?: string | null
+          court?: string | null
+          created_at?: string
+          id?: string
+          opposing_party?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deadlines: {
+        Row: {
+          case_id: string | null
+          created_at: string
+          due_date: string
+          id: string
+          kind: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          case_id?: string | null
+          created_at?: string
+          due_date: string
+          id?: string
+          kind?: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          case_id?: string | null
+          created_at?: string
+          due_date?: string
+          id?: string
+          kind?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deadlines_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_profiles: {
+        Row: {
+          avg_decision_days: number | null
+          behavior_summary: string
+          court: string | null
+          created_at: string
+          decisions_analyzed: number
+          grant_rate: number | null
+          id: string
+          last_updated_at: string
+          name: string
+          profile_type: string
+        }
+        Insert: {
+          avg_decision_days?: number | null
+          behavior_summary?: string
+          court?: string | null
+          created_at?: string
+          decisions_analyzed?: number
+          grant_rate?: number | null
+          id?: string
+          last_updated_at?: string
+          name: string
+          profile_type: string
+        }
+        Update: {
+          avg_decision_days?: number | null
+          behavior_summary?: string
+          court?: string | null
+          created_at?: string
+          decisions_analyzed?: number
+          grant_rate?: number | null
+          id?: string
+          last_updated_at?: string
+          name?: string
+          profile_type?: string
+        }
+        Relationships: []
+      }
+      piece_analysis: {
+        Row: {
+          analysis_result: string
+          case_id: string | null
+          created_at: string
+          id: string
+          input_file_url: string | null
+          input_text: string | null
+          mode: string
+          suggestions: string
+        }
+        Insert: {
+          analysis_result?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          input_file_url?: string | null
+          input_text?: string | null
+          mode?: string
+          suggestions?: string
+        }
+        Update: {
+          analysis_result?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          input_file_url?: string | null
+          input_text?: string | null
+          mode?: string
+          suggestions?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "piece_analysis_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_credit: {
+        Args: never
+        Returns: {
+          credits_total_month: number
+          credits_used_month: number
+          ok: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
