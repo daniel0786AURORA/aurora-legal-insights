@@ -32,8 +32,8 @@ const PROMPTS: Record<AuroraTask, string> = {
 export async function runAuroraTask(input: {
   task: AuroraTask;
   content: string;
-  weakPoints?: string;
-  profileContext?: string;
+  weakPoints?: string | undefined;
+  profileContext?: string | undefined;
 }): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw new Error("Serviço de IA não configurado.");
