@@ -57,10 +57,13 @@ export function DeadlineDialog({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const [y, m, d] = date.split("-").map(Number);
+      const parts = date.split("-").map(Number);
+      const y = parts[0] ?? new Date().getFullYear();
+      const m = parts[1] ?? 1;
+      const d = parts[2] ?? 1;
       const payload = {
         title: title.trim(),
-        due_date: new Date(y, (m ?? 1) - 1, d ?? 1, 12, 0, 0).toISOString(),
+        due_date: new Date(y, m - 1, d, 12, 0, 0).toISOString(),
         priority,
         kind,
         case_id: caseId === NO_CASE ? null : caseId,
