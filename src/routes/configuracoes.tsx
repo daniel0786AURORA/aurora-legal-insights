@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { accountSettingsQueryKey, useAccountSettings } from "@/hooks/use-account-settings";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/configuracoes")({
@@ -64,7 +65,7 @@ function Configuracoes() {
   }, [settings?.plan]);
 
   const update = useMutation({
-    mutationFn: async (patch: Record<string, string | number>) => {
+    mutationFn: async (patch: TablesUpdate<"account_settings">) => {
       if (!settings) throw new Error("Configurações ainda não carregadas.");
       const { error } = await supabase.from("account_settings").update(patch).eq("id", settings.id);
       if (error) throw error;
