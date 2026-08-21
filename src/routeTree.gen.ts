@@ -14,6 +14,7 @@ import { Route as AnaliseDePecasRouteImport } from './routes/analise-de-pecas'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ProcessosRouteImport } from './routes/processos'
 import { Route as RadarRouteImport } from './routes/radar'
+import { Route as ProcessosIndexRouteImport } from './routes/processos.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,35 +41,47 @@ const RadarRoute = RadarRouteImport.update({
   path: '/radar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProcessosIndexRoute = ProcessosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProcessosRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/processos': typeof ProcessosRoute
+  '/processos': typeof ProcessosRouteWithChildren
   '/radar': typeof RadarRoute
+  '/processos/': typeof ProcessosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/processos': typeof ProcessosRoute
   '/radar': typeof RadarRoute
+  '/processos': typeof ProcessosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/configuracoes': typeof ConfiguracoesRoute
-  '/processos': typeof ProcessosRoute
+  '/processos': typeof ProcessosRouteWithChildren
   '/radar': typeof RadarRoute
+  '/processos/': typeof ProcessosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/analise-de-pecas' | '/configuracoes' | '/processos' | '/radar'
+    | '/'
+    | '/analise-de-pecas'
+    | '/configuracoes'
+    | '/processos'
+    | '/radar'
+    | '/processos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analise-de-pecas' | '/configuracoes' | '/processos' | '/radar'
+  to: '/' | '/analise-de-pecas' | '/configuracoes' | '/radar' | '/processos'
   id:
     | '__root__'
     | '/'
@@ -76,13 +89,14 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/processos'
     | '/radar'
+    | '/processos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnaliseDePecasRoute: typeof AnaliseDePecasRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
-  ProcessosRoute: typeof ProcessosRoute
+  ProcessosRoute: typeof ProcessosRouteWithChildren
   RadarRoute: typeof RadarRoute
 }
 
@@ -123,14 +137,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RadarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/processos/': {
+      id: '/processos/'
+      path: '/'
+      fullPath: '/processos/'
+      preLoaderRoute: typeof ProcessosIndexRouteImport
+      parentRoute: typeof ProcessosRoute
+    }
   }
 }
+
+interface ProcessosRouteChildren {
+  ProcessosIndexRoute: typeof ProcessosIndexRoute
+}
+
+const ProcessosRouteChildren: ProcessosRouteChildren = {
+  ProcessosIndexRoute: ProcessosIndexRoute,
+}
+
+const ProcessosRouteWithChildren = ProcessosRoute._addFileChildren(
+  ProcessosRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaliseDePecasRoute: AnaliseDePecasRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
-  ProcessosRoute: ProcessosRoute,
+  ProcessosRoute: ProcessosRouteWithChildren,
   RadarRoute: RadarRoute,
 }
 export const routeTree = rootRouteImport
