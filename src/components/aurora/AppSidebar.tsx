@@ -93,16 +93,11 @@ function CreditsBadge({ collapsed }: { collapsed: boolean }) {
       <span className="block text-[0.68rem] uppercase tracking-[0.18em] text-muted-foreground">
         Créditos do mês
       </span>
-      <CreditsValue />
+      <CreditsCounter />
     </div>
   );
 }
 
-function CreditsValue() {
-  return <CreditsCounter />;
-}
-
-import { useAccountSettings } from "@/hooks/use-account-settings";
 
 function CreditsCounter() {
   const { data } = useAccountSettings();
