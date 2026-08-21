@@ -61,7 +61,7 @@ export const Route = createFileRoute("/processos/$caseId")({
       </div>
     </Wrapper>
   ),
-  component: CaseDetail;
+  component: CaseDetail,
 });
 
 function Wrapper({ children }: { children: React.ReactNode }) {
