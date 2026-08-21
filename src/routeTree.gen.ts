@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnaliseDePecasRouteImport } from './routes/analise-de-pecas'
 import { Route as ProcessosRouteImport } from './routes/processos'
 import { Route as RadarRouteImport } from './routes/radar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnaliseDePecasRoute = AnaliseDePecasRouteImport.update({
+  id: '/analise-de-pecas',
+  path: '/analise-de-pecas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProcessosRoute = ProcessosRouteImport.update({
@@ -31,30 +37,34 @@ const RadarRoute = RadarRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/processos': typeof ProcessosRoute
   '/radar': typeof RadarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/processos': typeof ProcessosRoute
   '/radar': typeof RadarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analise-de-pecas': typeof AnaliseDePecasRoute
   '/processos': typeof ProcessosRoute
   '/radar': typeof RadarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/processos' | '/radar'
+  fullPaths: '/' | '/analise-de-pecas' | '/processos' | '/radar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/processos' | '/radar'
-  id: '__root__' | '/' | '/processos' | '/radar'
+  to: '/' | '/analise-de-pecas' | '/processos' | '/radar'
+  id: '__root__' | '/' | '/analise-de-pecas' | '/processos' | '/radar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnaliseDePecasRoute: typeof AnaliseDePecasRoute
   ProcessosRoute: typeof ProcessosRoute
   RadarRoute: typeof RadarRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analise-de-pecas': {
+      id: '/analise-de-pecas'
+      path: '/analise-de-pecas'
+      fullPath: '/analise-de-pecas'
+      preLoaderRoute: typeof AnaliseDePecasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/processos': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnaliseDePecasRoute: AnaliseDePecasRoute,
   ProcessosRoute: ProcessosRoute,
   RadarRoute: RadarRoute,
 }
