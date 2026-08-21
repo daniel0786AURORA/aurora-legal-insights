@@ -1,24 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { EmptyPanel, PageShell } from "@/components/aurora/PageShell";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Início — Aurora | Inteligência jurídica" },
+      {
+        name: "description",
+        content:
+          "Painel inicial da Aurora: visão geral de processos, prazos e análises de inteligência jurídica.",
+      },
+      { property: "og:title", content: "Início — Aurora | Inteligência jurídica" },
+      {
+        property: "og:description",
+        content: "Painel inicial da Aurora para advogados: processos, prazos e análises de IA.",
+      },
+    ],
+  }),
+  component: Inicio,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Inicio() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
+    <PageShell
+      title="Início"
+      subtitle="Sua base está pronta. O conteúdo deste painel será construído nos próximos passos."
     >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+      <EmptyPanel label="Painel inicial — em construção" />
+    </PageShell>
   );
 }
