@@ -239,7 +239,7 @@ function AnaliseDePecas() {
     }
     if (judgeName.trim()) blocks.push(`Juiz(a): ${judgeName.trim()}`);
     if (lawyerName.trim()) blocks.push(`Advogado adversário: ${lawyerName.trim()}`);
-    if (fileText) blocks.push(`Documento anexado (${fileName}):\n${fileText}`);
+    for (const d of docs) blocks.push(`Documento anexado (${d.name}):\n${d.text}`);
     if (pieceText.trim()) blocks.push(`Peça / texto informado:\n${pieceText.trim()}`);
     return blocks.join("\n\n").slice(0, 110000);
   }
