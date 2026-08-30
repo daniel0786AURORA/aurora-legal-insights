@@ -10,6 +10,8 @@ import {
   ShieldQuestion,
   Sparkles,
   Upload,
+  X,
+
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -138,8 +140,8 @@ function AnaliseDePecas() {
 
   const [mode, setMode] = useState<Mode>("processo_completo");
   const [caseId, setCaseId] = useState<string>("");
-  const [fileName, setFileName] = useState("");
-  const [fileText, setFileText] = useState("");
+  const [docs, setDocs] = useState<{ name: string; text: string }[]>([]);
+
   const [pieceText, setPieceText] = useState("");
   const [reading, setReading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -175,35 +177,49 @@ function AnaliseDePecas() {
     setJudgeName("");
   }
 
-  async function onPickFile(file: File | undefined) {
-    if (!file) return;
+  async function onPickFiles(list: FileList | null) {
+    const files = Array.from(list ?? []);
+    if (!files.length) return;
+    const single = mode === "so_peca";
     setReading(true);
+    const read: { name: string; text: string }[] = [];
     try {
-      const text = file.type === "application/pdf" ? await extractPdfText(file) : await file.text();
-      if (!text.trim()) throw new Error("Não encontramos texto legível neste arquivo.");
-      setFileText(text);
-      setFileName(file.name);
-      if (caseId) {
-        const path = `${caseId}/${Date.now()}-${slugify(file.name)}`;
-        const { error } = await supabase.storage.from("case-files").upload(path, file);
-        if (!error) {
-          await supabase.from("case_files").insert({
-            case_id: caseId,
-            file_name: file.name,
-            file_kind: "enviado_pelo_advogado",
-            file_url: path,
-          });
-          void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
+      for (const file of single ? files.slice(0, 1) : files) {
+        try {
+          const text =
+            file.type === "application/pdf" ? await extractPdfText(file) : await file.text();
+          if (!text.trim()) throw new Error("Não encontramos texto legível neste arquivo.");
+          read.push({ name: file.name, text });
+          if (caseId) {
+            const path = `${caseId}/${Date.now()}-${slugify(file.name)}`;
+            const { error } = await supabase.storage.from("case-files").upload(path, file);
+            if (!error) {
+              await supabase.from("case_files").insert({
+                case_id: caseId,
+                file_name: file.name,
+                file_kind: "enviado_pelo_advogado",
+                file_url: path,
+              });
+            }
+          }
+        } catch (e) {
+          toast.error(`Falha em ${file.name}`, { description: (e as Error).message });
         }
       }
-      toast.success("Arquivo lido", { description: file.name });
-    } catch (e) {
-      toast.error("Não foi possível ler o arquivo", { description: (e as Error).message });
+      if (read.length) {
+        setDocs((prev) => (single ? read : [...prev, ...read]));
+        if (caseId) void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
+        toast.success(
+          read.length > 1 ? `${read.length} arquivos lidos` : "Arquivo lido",
+          { description: read.map((d) => d.name).join(", ") },
+        );
+      }
     } finally {
       setReading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
   }
+
 
   function buildContent(): string {
     const blocks: string[] = [];
@@ -225,7 +241,7 @@ function AnaliseDePecas() {
     }
     if (judgeName.trim()) blocks.push(`Juiz(a): ${judgeName.trim()}`);
     if (lawyerName.trim()) blocks.push(`Advogado adversário: ${lawyerName.trim()}`);
-    if (fileText) blocks.push(`Documento anexado (${fileName}):\n${fileText}`);
+    for (const d of docs) blocks.push(`Documento anexado (${d.name}):\n${d.text}`);
     if (pieceText.trim()) blocks.push(`Peça / texto informado:\n${pieceText.trim()}`);
     return blocks.join("\n\n").slice(0, 110000);
   }
@@ -433,32 +449,59 @@ function AnaliseDePecas() {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-3">
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/pdf,text/plain"
-            className="hidden"
-            onChange={(e) => void onPickFile(e.target.files?.[0])}
-          />
-          <Button
-            variant="outline"
-            onClick={() => fileRef.current?.click()}
-            disabled={reading}
-          >
-            {reading ? (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            ) : (
-              <Upload className="mr-2 size-4" />
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/pdf,text/plain"
+              multiple={mode !== "so_peca"}
+              className="hidden"
+              onChange={(e) => void onPickFiles(e.target.files)}
+            />
+            <Button
+              variant="outline"
+              onClick={() => fileRef.current?.click()}
+              disabled={reading}
+            >
+              {reading ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 size-4" />
+              )}
+              {mode === "so_peca" ? "Enviar peça (PDF)" : "Enviar PDFs do processo"}
+            </Button>
+            {mode !== "so_peca" && (
+              <span className="text-xs text-muted-foreground">
+                Você pode selecionar vários arquivos de uma vez.
+              </span>
             )}
-            {mode === "so_peca" ? "Enviar peça (PDF)" : "Enviar PDF do processo"}
-          </Button>
-          {fileName && (
-            <span className="text-numeric inline-flex items-center gap-2 text-xs text-teal">
-              <FileText className="size-3.5" /> {fileName}
-            </span>
+          </div>
+          {docs.length > 0 && (
+            <ul className="space-y-1.5">
+              {docs.map((d, i) => (
+                <li
+                  key={`${d.name}-${i}`}
+                  className="text-numeric flex items-center justify-between gap-3 rounded-md border border-border bg-surface-alt px-3 py-2 text-xs text-teal"
+                >
+                  <span className="inline-flex min-w-0 items-center gap-2">
+                    <FileText className="size-3.5 shrink-0" />
+                    <span className="truncate">{d.name}</span>
+                  </span>
+                  <button
+                    type="button"
+                    aria-label={`Remover ${d.name}`}
+                    className="text-muted-foreground transition-colors hover:text-urgent"
+                    onClick={() => setDocs((prev) => prev.filter((_, idx) => idx !== i))}
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
+
 
         {mode !== "processo_completo" && (
           <div>
