@@ -10,6 +10,8 @@ import {
   ShieldQuestion,
   Sparkles,
   Upload,
+  X,
+
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
