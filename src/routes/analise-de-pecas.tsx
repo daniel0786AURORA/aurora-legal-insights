@@ -175,35 +175,49 @@ function AnaliseDePecas() {
     setJudgeName("");
   }
 
-  async function onPickFile(file: File | undefined) {
-    if (!file) return;
+  async function onPickFiles(list: FileList | null) {
+    const files = Array.from(list ?? []);
+    if (!files.length) return;
+    const single = mode === "so_peca";
     setReading(true);
+    const read: { name: string; text: string }[] = [];
     try {
-      const text = file.type === "application/pdf" ? await extractPdfText(file) : await file.text();
-      if (!text.trim()) throw new Error("Não encontramos texto legível neste arquivo.");
-      setFileText(text);
-      setFileName(file.name);
-      if (caseId) {
-        const path = `${caseId}/${Date.now()}-${slugify(file.name)}`;
-        const { error } = await supabase.storage.from("case-files").upload(path, file);
-        if (!error) {
-          await supabase.from("case_files").insert({
-            case_id: caseId,
-            file_name: file.name,
-            file_kind: "enviado_pelo_advogado",
-            file_url: path,
-          });
-          void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
+      for (const file of single ? files.slice(0, 1) : files) {
+        try {
+          const text =
+            file.type === "application/pdf" ? await extractPdfText(file) : await file.text();
+          if (!text.trim()) throw new Error("Não encontramos texto legível neste arquivo.");
+          read.push({ name: file.name, text });
+          if (caseId) {
+            const path = `${caseId}/${Date.now()}-${slugify(file.name)}`;
+            const { error } = await supabase.storage.from("case-files").upload(path, file);
+            if (!error) {
+              await supabase.from("case_files").insert({
+                case_id: caseId,
+                file_name: file.name,
+                file_kind: "enviado_pelo_advogado",
+                file_url: path,
+              });
+            }
+          }
+        } catch (e) {
+          toast.error(`Falha em ${file.name}`, { description: (e as Error).message });
         }
       }
-      toast.success("Arquivo lido", { description: file.name });
-    } catch (e) {
-      toast.error("Não foi possível ler o arquivo", { description: (e as Error).message });
+      if (read.length) {
+        setDocs((prev) => (single ? read : [...prev, ...read]));
+        if (caseId) void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
+        toast.success(
+          read.length > 1 ? `${read.length} arquivos lidos` : "Arquivo lido",
+          { description: read.map((d) => d.name).join(", ") },
+        );
+      }
     } finally {
       setReading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
   }
+
 
   function buildContent(): string {
     const blocks: string[] = [];
