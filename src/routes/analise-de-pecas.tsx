@@ -447,32 +447,59 @@ function AnaliseDePecas() {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-3">
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/pdf,text/plain"
-            className="hidden"
-            onChange={(e) => void onPickFile(e.target.files?.[0])}
-          />
-          <Button
-            variant="outline"
-            onClick={() => fileRef.current?.click()}
-            disabled={reading}
-          >
-            {reading ? (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            ) : (
-              <Upload className="mr-2 size-4" />
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/pdf,text/plain"
+              multiple={mode !== "so_peca"}
+              className="hidden"
+              onChange={(e) => void onPickFiles(e.target.files)}
+            />
+            <Button
+              variant="outline"
+              onClick={() => fileRef.current?.click()}
+              disabled={reading}
+            >
+              {reading ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 size-4" />
+              )}
+              {mode === "so_peca" ? "Enviar peça (PDF)" : "Enviar PDFs do processo"}
+            </Button>
+            {mode !== "so_peca" && (
+              <span className="text-xs text-muted-foreground">
+                Você pode selecionar vários arquivos de uma vez.
+              </span>
             )}
-            {mode === "so_peca" ? "Enviar peça (PDF)" : "Enviar PDF do processo"}
-          </Button>
-          {fileName && (
-            <span className="text-numeric inline-flex items-center gap-2 text-xs text-teal">
-              <FileText className="size-3.5" /> {fileName}
-            </span>
+          </div>
+          {docs.length > 0 && (
+            <ul className="space-y-1.5">
+              {docs.map((d, i) => (
+                <li
+                  key={`${d.name}-${i}`}
+                  className="text-numeric flex items-center justify-between gap-3 rounded-md border border-border bg-surface-alt px-3 py-2 text-xs text-teal"
+                >
+                  <span className="inline-flex min-w-0 items-center gap-2">
+                    <FileText className="size-3.5 shrink-0" />
+                    <span className="truncate">{d.name}</span>
+                  </span>
+                  <button
+                    type="button"
+                    aria-label={`Remover ${d.name}`}
+                    className="text-muted-foreground transition-colors hover:text-urgent"
+                    onClick={() => setDocs((prev) => prev.filter((_, idx) => idx !== i))}
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
+
 
         {mode !== "processo_completo" && (
           <div>
