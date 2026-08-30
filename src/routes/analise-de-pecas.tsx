@@ -138,8 +138,8 @@ function AnaliseDePecas() {
 
   const [mode, setMode] = useState<Mode>("processo_completo");
   const [caseId, setCaseId] = useState<string>("");
-  const [fileName, setFileName] = useState("");
-  const [fileText, setFileText] = useState("");
+  const [docs, setDocs] = useState<{ name: string; text: string }[]>([]);
+
   const [pieceText, setPieceText] = useState("");
   const [reading, setReading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
