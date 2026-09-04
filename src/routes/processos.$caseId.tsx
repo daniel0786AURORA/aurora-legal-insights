@@ -126,7 +126,7 @@ function CaseDetail() {
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
-      const path = `${caseId}/${Date.now()}-${file.name.replace(/[^\w.\-]+/g, "_")}`;
+      const path = `${caseId}/${Date.now()}-${file.name.replace(/[^\w.-]+/g, "_")}`;
       const { error: upErr } = await supabase.storage.from("case-files").upload(path, file);
       if (upErr) throw upErr;
       const { error } = await supabase.from("case_files").insert({
@@ -184,8 +184,7 @@ function CaseDetail() {
               Próximo prazo
             </p>
             <p className="mt-0.5 text-sm text-foreground">
-              {next.title} —{" "}
-              <span className="text-numeric">{formatDate(next.due_date)}</span>
+              {next.title} — <span className="text-numeric">{formatDate(next.due_date)}</span>
             </p>
           </div>
           <span
@@ -251,7 +250,9 @@ function CaseDetail() {
           <ol className="mt-5 space-y-5">
             {activity.map((a) => (
               <li key={a.id} className="relative flex gap-4 pl-1">
-                <span className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", dotClass(a.event_type))} />
+                <span
+                  className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", dotClass(a.event_type))}
+                />
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-numeric text-xs text-muted-foreground">
@@ -309,7 +310,9 @@ function CaseDetail() {
                   {f.file_name}
                 </button>
                 <span className="text-xs text-muted-foreground">
-                  {f.file_kind === "gerado_pela_aurora" ? "Gerado pela Aurora" : "Enviado pelo advogado"}
+                  {f.file_kind === "gerado_pela_aurora"
+                    ? "Gerado pela Aurora"
+                    : "Enviado pelo advogado"}
                 </span>
                 <span className="text-numeric text-xs text-muted-foreground">
                   {formatDate(f.uploaded_at)}

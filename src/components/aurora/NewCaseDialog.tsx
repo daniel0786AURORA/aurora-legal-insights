@@ -109,10 +109,7 @@ export function NewCaseDialog() {
             />
           </Field>
           <Field label="Nome do cliente">
-            <Input
-              value={form.client_name}
-              onChange={(e) => set("client_name")(e.target.value)}
-            />
+            <Input value={form.client_name} onChange={(e) => set("client_name")(e.target.value)} />
           </Field>
           <Field label="Parte contrária">
             <Input

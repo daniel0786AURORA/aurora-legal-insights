@@ -1,7 +1,15 @@
 const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "google/gemini-3-flash";
 
-export type AuroraTask = "resumo" | "raiox" | "contestacao" | "reforco" | "recurso";
+export type AuroraTask =
+  | "resumo"
+  | "raiox"
+  | "contestacao"
+  | "reforco"
+  | "recurso"
+  | "extrair_processo"
+  | "extrair_perfil_juiz"
+  | "extrair_perfil_advogado";
 
 const SYSTEM =
   "Você é a Aurora, assistente de inteligência jurídica brasileira para advogados. " +
@@ -11,6 +19,20 @@ const SYSTEM =
   "por um advogado humano.";
 
 const PROMPTS: Record<AuroraTask, string> = {
+  extrair_perfil_juiz:
+    "Extraia as seguintes informações sobre o juiz a partir do documento fornecido. " +
+    'Retorne SOMENTE um JSON válido no formato: {"nome_juiz": "...", "taxa_liminar_concedida": true/false/null, "artigos_mais_citados": ["..."], "fundamentacao_recorte_negativas": "...", "confiabilidade_extracao": "alta/media/baixa"}. ' +
+    "Se não encontrar alguma informação, retorne null.",
+  extrair_perfil_advogado:
+    "Extraia as seguintes informações sobre o advogado a partir do documento fornecido. " +
+    'Retorne SOMENTE um JSON válido no formato: {"nome_advogado": "...", "estrategia_comum": "...", "jurisprudencia_favorita": ["..."], "tom_peticoes": "tecnico/emocional/prolixo/misto", "pontos_fracos_identificados": "...", "confiabilidade_extracao": "alta/media/baixa"}. ' +
+    "Se não encontrar alguma informação, retorne null.",
+
+  extrair_processo:
+    "Extraia as seguintes informações do processo judicial fornecido. " +
+    'Responda SOMENTE com JSON válido no formato: {"case_number": "...", "client_name": "...", "client_phone": "...", "client_email": "...", "case_type": "...", "opposing_party": "...", "client_role": "Autor"}. ' +
+    "Se não encontrar alguma informação, deixe como string vazia. client_role DEVE ser 'Autor', 'Réu' ou 'Terceiro'.",
+
   resumo:
     "Resuma o processo abaixo em 4 blocos com títulos: FATOS, PEDIDOS, CRONOLOGIA e PRÓXIMOS PRAZOS. " +
     "Use linguagem simples, frases curtas, sem jargão. Máximo 350 palavras.",
@@ -55,11 +77,17 @@ export async function runAuroraTask(input: {
         { role: "system", content: SYSTEM },
         { role: "user", content: parts.join("\n") },
       ],
-      ...(input.task === "raiox" ? { response_format: { type: "json_object" } } : {}),
+      ...(input.task === "raiox" ||
+      input.task === "extrair_processo" ||
+      input.task === "extrair_perfil_juiz" ||
+      input.task === "extrair_perfil_advogado"
+        ? { response_format: { type: "json_object" } }
+        : {}),
     }),
   });
 
-  if (res.status === 429) throw new Error("Limite de uso da IA atingido. Tente novamente em instantes.");
+  if (res.status === 429)
+    throw new Error("Limite de uso da IA atingido. Tente novamente em instantes.");
   if (res.status === 402) throw new Error("Créditos de IA do workspace esgotados.");
   if (!res.ok) throw new Error(`Falha na IA (${res.status}): ${(await res.text()).slice(0, 200)}`);
 
@@ -68,5 +96,6 @@ export async function runAuroraTask(input: {
   };
   const text = data.choices?.[0]?.message?.content?.trim();
   if (!text) throw new Error("A IA não retornou conteúdo.");
+
   return text;
 }

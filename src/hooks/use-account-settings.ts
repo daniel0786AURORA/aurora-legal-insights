@@ -20,9 +20,7 @@ export function useAccountSettings() {
     queryFn: async (): Promise<AccountSettings | null> => {
       const { data, error } = await supabase
         .from("account_settings")
-        .select(
-          "id, firm_name, oab, plan, credits_total_month, credits_used_month, renewal_day",
-        )
+        .select("id, firm_name, oab, plan, credits_total_month, credits_used_month, renewal_day")
         .order("created_at", { ascending: true })
         .limit(1)
         .maybeSingle();

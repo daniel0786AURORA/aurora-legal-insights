@@ -122,7 +122,12 @@ function Configuracoes() {
               {currentPlan && (
                 <span className="text-sm text-muted-foreground">{currentPlan.detail}</span>
               )}
-              <Button variant="outline" size="sm" className="ml-auto" onClick={() => setPlanOpen(true)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="ml-auto"
+                onClick={() => setPlanOpen(true)}
+              >
                 Trocar plano
               </Button>
             </div>
@@ -138,7 +143,12 @@ function Configuracoes() {
                   {used}/{total}
                 </p>
               </div>
-              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setCreditsOpen(true)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => setCreditsOpen(true)}
+              >
                 <Plus className="size-4" /> Comprar créditos avulsos
               </Button>
             </div>

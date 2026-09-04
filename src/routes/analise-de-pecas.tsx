@@ -11,7 +11,6 @@ import {
   Sparkles,
   Upload,
   X,
-
 } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -92,7 +91,10 @@ const DRAFT_LABELS: Record<DraftKind, string> = {
 };
 
 function parsePoints(raw: string): Point[] {
-  const json = raw.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  const json = raw
+    .replace(/^```(?:json)?/i, "")
+    .replace(/```$/, "")
+    .trim();
   try {
     const parsed = JSON.parse(json) as { pontos?: Point[] } | Point[];
     const list = Array.isArray(parsed) ? parsed : (parsed.pontos ?? []);
@@ -157,14 +159,14 @@ function AnaliseDePecas() {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
 
-  const selectedCase = useMemo(
-    () => cases.find((c) => c.id === caseId) ?? null,
-    [cases, caseId],
-  );
+  const selectedCase = useMemo(() => cases.find((c) => c.id === caseId) ?? null, [cases, caseId]);
 
   const needsCase = mode !== "so_peca";
   const needsAuthorization =
-    needsCase && !!selectedCase && (!!judgeName.trim() || !!lawyerName.trim()) && authorized === null;
+    needsCase &&
+    !!selectedCase &&
+    (!!judgeName.trim() || !!lawyerName.trim()) &&
+    authorized === null;
 
   const weakPoints = points.filter((p) => p.tipo === "fraco");
 
@@ -209,17 +211,15 @@ function AnaliseDePecas() {
       if (read.length) {
         setDocs((prev) => (single ? read : [...prev, ...read]));
         if (caseId) void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
-        toast.success(
-          read.length > 1 ? `${read.length} arquivos lidos` : "Arquivo lido",
-          { description: read.map((d) => d.name).join(", ") },
-        );
+        toast.success(read.length > 1 ? `${read.length} arquivos lidos` : "Arquivo lido", {
+          description: read.map((d) => d.name).join(", "),
+        });
       }
     } finally {
       setReading(false);
       if (fileRef.current) fileRef.current.value = "";
     }
   }
-
 
   function buildContent(): string {
     const blocks: string[] = [];
@@ -262,7 +262,9 @@ function AnaliseDePecas() {
     const names = [judgeName.trim(), lawyerName.trim()].filter(Boolean);
     const { data } = await supabase
       .from("legal_profiles")
-      .select("name, profile_type, court, grant_rate, avg_decision_days, decisions_analyzed, behavior_summary")
+      .select(
+        "name, profile_type, court, grant_rate, avg_decision_days, decisions_analyzed, behavior_summary",
+      )
       .in("name", names);
     const context = (data ?? [])
       .map(
@@ -312,10 +314,7 @@ function AnaliseDePecas() {
     void queryClient.invalidateQueries({ queryKey: ["case_files", caseId] });
   }
 
-  async function run(
-    task: "resumo" | "raiox" | DraftKind,
-    title: string,
-  ): Promise<void> {
+  async function run(task: "resumo" | "raiox" | DraftKind, title: string): Promise<void> {
     const content = buildContent();
     if (!content.trim()) {
       toast.error("Falta material", {
@@ -349,7 +348,8 @@ function AnaliseDePecas() {
         setSummary(text);
       } else if (task === "raiox") {
         const parsed = parsePoints(text);
-        if (!parsed.length) throw new Error("A IA não retornou pontos estruturados. Tente novamente.");
+        if (!parsed.length)
+          throw new Error("A IA não retornou pontos estruturados. Tente novamente.");
         setPoints(parsed);
       } else {
         setDraftKind(task);
@@ -459,11 +459,7 @@ function AnaliseDePecas() {
               className="hidden"
               onChange={(e) => void onPickFiles(e.target.files)}
             />
-            <Button
-              variant="outline"
-              onClick={() => fileRef.current?.click()}
-              disabled={reading}
-            >
+            <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={reading}>
               {reading ? (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               ) : (
@@ -501,7 +497,6 @@ function AnaliseDePecas() {
             </ul>
           )}
         </div>
-
 
         {mode !== "processo_completo" && (
           <div>
@@ -541,7 +536,10 @@ function AnaliseDePecas() {
 
         <div className="flex flex-wrap gap-3 border-t border-border pt-5">
           {mode === "processo_completo" && (
-            <Button disabled={busy !== null} onClick={() => void run("resumo", "Resumo do processo")}>
+            <Button
+              disabled={busy !== null}
+              onClick={() => void run("resumo", "Resumo do processo")}
+            >
               {busy === "resumo" ? (
                 <Loader2 className="mr-2 size-4 animate-spin" />
               ) : (

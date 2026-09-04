@@ -20,8 +20,6 @@ export type Database = {
           renewal_day: number;
           singleton: boolean;
           updated_at: string;
-          storage_path: string | null;
-          client_role: string | null;
         };
         Insert: {
           created_at?: string;
@@ -34,8 +32,6 @@ export type Database = {
           renewal_day?: number;
           singleton?: boolean;
           updated_at?: string;
-          storage_path?: string | null;
-          client_role?: string | null;
         };
         Update: {
           created_at?: string;
@@ -48,8 +44,6 @@ export type Database = {
           renewal_day?: number;
           singleton?: boolean;
           updated_at?: string;
-          storage_path?: string | null;
-          client_role?: string | null;
         };
         Relationships: [];
       };
@@ -81,44 +75,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "authorization_log_case_id_fkey";
-            columns: ["case_id"];
-            isOneToOne: false;
-            referencedRelation: "cases";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      calendar_events: {
-        Row: {
-          id: string;
-          created_at: string;
-          title: string;
-          description: string | null;
-          start_time: string;
-          end_time: string;
-          case_id: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          title: string;
-          description?: string | null;
-          start_time: string;
-          end_time: string;
-          case_id?: string | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          title?: string;
-          description?: string | null;
-          start_time?: string;
-          end_time?: string;
-          case_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "calendar_events_case_id_fkey";
             columns: ["case_id"];
             isOneToOne: false;
             referencedRelation: "cases";
@@ -213,8 +169,6 @@ export type Database = {
           status: string;
           summary: string;
           updated_at: string;
-          storage_path: string | null;
-          client_role: string | null;
         };
         Insert: {
           case_number: string;
@@ -229,8 +183,6 @@ export type Database = {
           status?: string;
           summary?: string;
           updated_at?: string;
-          storage_path?: string | null;
-          client_role?: string | null;
         };
         Update: {
           case_number?: string;
@@ -245,8 +197,6 @@ export type Database = {
           status?: string;
           summary?: string;
           updated_at?: string;
-          storage_path?: string | null;
-          client_role?: string | null;
         };
         Relationships: [];
       };
@@ -294,75 +244,6 @@ export type Database = {
           },
         ];
       };
-      judge_profiles: {
-        Row: {
-          id: string;
-          created_at: string;
-          nome_juiz: string;
-          taxa_liminar_concedida: boolean | null;
-          artigos_mais_citados: string[] | null;
-          fundamentacao_recorte_negativas: string | null;
-          confiabilidade_extracao: string | null;
-          last_updated_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          nome_juiz: string;
-          taxa_liminar_concedida?: boolean | null;
-          artigos_mais_citados?: string[] | null;
-          fundamentacao_recorte_negativas?: string | null;
-          confiabilidade_extracao?: string | null;
-          last_updated_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          nome_juiz?: string;
-          taxa_liminar_concedida?: boolean | null;
-          artigos_mais_citados?: string[] | null;
-          fundamentacao_recorte_negativas?: string | null;
-          confiabilidade_extracao?: string | null;
-          last_updated_at?: string | null;
-        };
-        Relationships: [];
-      };
-      lawyer_profiles: {
-        Row: {
-          id: string;
-          created_at: string;
-          nome_advogado: string;
-          estrategia_comum: string | null;
-          jurisprudencia_favorita: string[] | null;
-          tom_peticoes: string | null;
-          pontos_fracos_identificados: string | null;
-          confiabilidade_extracao: string | null;
-          last_updated_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          nome_advogado: string;
-          estrategia_comum?: string | null;
-          jurisprudencia_favorita?: string[] | null;
-          tom_peticoes?: string | null;
-          pontos_fracos_identificados?: string | null;
-          confiabilidade_extracao?: string | null;
-          last_updated_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          nome_advogado?: string;
-          estrategia_comum?: string | null;
-          jurisprudencia_favorita?: string[] | null;
-          tom_peticoes?: string | null;
-          pontos_fracos_identificados?: string | null;
-          confiabilidade_extracao?: string | null;
-          last_updated_at?: string | null;
-        };
-        Relationships: [];
-      };
       legal_profiles: {
         Row: {
           avg_decision_days: number | null;
@@ -401,50 +282,6 @@ export type Database = {
           profile_type?: string;
         };
         Relationships: [];
-      };
-      predictive_analysis_history: {
-        Row: {
-          id: string;
-          created_at: string;
-          case_id: string | null;
-          judge_profile_id: string | null;
-          lawyer_profile_id: string | null;
-          score: number | null;
-          recommendations: Json | null;
-          timeline: Json | null;
-          extracted_data: Json | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          case_id?: string | null;
-          judge_profile_id?: string | null;
-          lawyer_profile_id?: string | null;
-          score?: number | null;
-          recommendations?: Json | null;
-          timeline?: Json | null;
-          extracted_data?: Json | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          case_id?: string | null;
-          judge_profile_id?: string | null;
-          lawyer_profile_id?: string | null;
-          score?: number | null;
-          recommendations?: Json | null;
-          timeline?: Json | null;
-          extracted_data?: Json | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "predictive_history_case_id_fkey";
-            columns: ["case_id"];
-            isOneToOne: false;
-            referencedRelation: "cases";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       piece_analysis: {
         Row: {

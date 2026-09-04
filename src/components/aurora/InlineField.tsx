@@ -114,7 +114,9 @@ export function InlineField({
           title="Clique para editar"
         >
           {children ?? (
-            <span className={cn("truncate", mono && "text-numeric", !value && "text-muted-foreground")}>
+            <span
+              className={cn("truncate", mono && "text-numeric", !value && "text-muted-foreground")}
+            >
               {value || "—"}
             </span>
           )}

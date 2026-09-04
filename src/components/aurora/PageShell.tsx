@@ -13,9 +13,7 @@ export function PageShell({
     <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <header>
         <h1 className="font-display text-3xl text-foreground">{title}</h1>
-        {subtitle && (
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{subtitle}</p>
-        )}
+        {subtitle && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{subtitle}</p>}
       </header>
       <div className="mt-8">{children}</div>
     </div>

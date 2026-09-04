@@ -78,9 +78,7 @@ function Inicio() {
   }, [monthDeadlines]);
 
   const firm = settings?.firm_name?.trim();
-  const creditsLeft = settings
-    ? settings.credits_total_month - settings.credits_used_month
-    : null;
+  const creditsLeft = settings ? settings.credits_total_month - settings.credits_used_month : null;
 
   const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
   const leadingBlanks = new Date(cursor.getFullYear(), cursor.getMonth(), 1).getDay();
@@ -88,18 +86,24 @@ function Inicio() {
   const selectedItems = selectedDay ? (byDay.get(selectedDay) ?? []) : [];
 
   return (
-    <PageShell title={`Olá, ${firm || "Advogado(a)"}`} subtitle="Visão geral do seu escritório hoje.">
+    <PageShell
+      title={`Olá, ${firm || "Advogado(a)"}`}
+      subtitle="Visão geral do seu escritório hoje."
+    >
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Processos ativos" value={stats?.activeCases ?? 0} />
         <StatCard label="Prazos essa semana" value={stats?.weekDeadlines ?? 0} />
         <StatCard label="Peças analisadas (7 dias)" value={stats?.pieces ?? 0} />
         <StatCard
           label="Créditos disponíveis"
-          value={
-            settings ? `${creditsLeft}/${settings.credits_total_month}` : "—"
-          }
+          value={settings ? `${creditsLeft}/${settings.credits_total_month}` : "—"}
           action={
-            <Button size="sm" variant="outline" className="h-7 gap-1 px-2 text-xs" onClick={() => setBuyOpen(true)}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 gap-1 px-2 text-xs"
+              onClick={() => setBuyOpen(true)}
+            >
               <Plus className="size-3" /> Comprar
             </Button>
           }

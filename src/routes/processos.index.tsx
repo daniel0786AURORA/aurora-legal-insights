@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { NewCaseDialog } from "@/components/aurora/NewCaseDialog";
+import { ImportCaseDialog } from "@/components/aurora/ImportCaseDialog";
 import { StatusBadge } from "@/components/aurora/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { casesQueryOptions, type CaseRow } from "@/lib/cases";
@@ -65,7 +66,10 @@ function ProcessosList() {
             {cases.length === 1 ? "" : "s"} no escritório.
           </p>
         </div>
-        <NewCaseDialog />
+        <div className="flex items-center gap-2">
+          <ImportCaseDialog />
+          <NewCaseDialog />
+        </div>
       </header>
 
       <div className="relative mt-6">
@@ -105,9 +109,7 @@ function ProcessosList() {
                     <span className="text-muted-foreground"> vs. {c.opposing_party}</span>
                   ) : null}
                 </h2>
-                <p className="text-numeric mt-1 text-xs text-muted-foreground">
-                  {c.case_number}
-                </p>
+                <p className="text-numeric mt-1 text-xs text-muted-foreground">{c.case_number}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {c.court || "Vara não informada"}
                   {c.case_type ? ` · ${c.case_type}` : ""}
